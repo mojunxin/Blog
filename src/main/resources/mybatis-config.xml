@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 开启驼峰命名法和下划线命名法的映射 -->
+        <setting name="mapUnderscoreToCamelCase" value="true" />
+        <!-- 在控制台打印日志，可以观测生成的 SQL 语句和执行结果 -->
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+
+    <typeAliases>
+        <!-- 为 model 包下的每个类都起一个别名，默认为类名首字母小写 -->
+        <package name="org.blog.model" />
+        <package name="org.demo.model" />
+    </typeAliases>
+    <!-- 配置文件上传复制类 用于封装文件数据为file对象 -->
+
+</configuration>

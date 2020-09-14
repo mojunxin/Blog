@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.blog.dao.WhisperDao">
+
+    <select id="dataCount" resultType="Integer">
+        SELECT count(1) FROM whisper
+        <if test="userId!=null">
+            where user_id = #{userId}
+        </if>
+        ;
+    </select>
+
+    <select id="getWhisperList" resultType="Whisper">
+        SELECT * FROM whisper  where is_show = 'Y '
+        <if test="userId!=null||classCode!=null">
+            <if test="userId!=null">
+               and user_id = #{userId}
+            </if>
+            <if test="classCode!=null">
+                <choose>
+                    <when test="userId!=null">
+                        and class_code=#{classCode}
+                    </when>
+                    <when test="userId==null">
+                        and class_code=#{classCode}
+                    </when>
+                </choose>
+            </if>
+        </if>
+        order by create_date desc
+        <if test="x!=null">
+            limit #{x},#{y}
+        </if>
+        ;
+    </select>
+
+    <select id="getById" resultType="Whisper">
+      SELECT * FROM whisper where id = #{id};
+    </select>
+
+    <update id="update">
+        update whisper
+        <set>
+            <if test="userId!=null">
+                user_id=#{userId},
+            </if>
+            <if test="username!=null">
+                username=#{username},
+            </if>
+            <if test="createDate!=null">
+                create_date=#{createDate},
+            </if>
+            <if test="pic!=null">
+                pic=#{pic},
+            </if>
+            <if test="classCode!=null">
+                class_code=#{classCode},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="isShow!=null">
+                is_show=#{isShow},
+            </if>
+            <if test="clickNum!=null">
+                click_num=#{clickNum},
+            </if>
+            <if test="msgNum!=null">
+                msg_num=#{msgNum},
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+
+    <insert id="save">
+      insert into whisper values
+      (#{id},#{userId},#{username},#{createDate},#{pic},#{classCode},#{content},#{isShow},#{clickNum},#{msgNum});
+    </insert>
+
+    <delete id="delete">
+        delete from whisper where id in (
+        <foreach item="item" separator="," collection="array">
+            #{item}
+        </foreach>
+        );
+    </delete>
+
+    <select id="getWhisperListForAdmin" resultType="Whisper">
+        SELECT * FROM whisper order by create_date desc
+        <if test="x!=null">
+            limit #{x},#{y}
+        </if>
+        ;
+    </select>
+
+</mapper>

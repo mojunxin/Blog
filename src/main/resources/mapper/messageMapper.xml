@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.blog.dao.MessageDao">
+
+    <select id="dataCount" resultType="Integer">
+        SELECT count(1) FROM message
+        <if test="classCode!=null||paperId!=null">
+            where
+            <if test="classCode!=null">
+                class_code = #{classCode}
+            </if>
+            <if test="paperId!=null">
+                <choose>
+                    <when test="classCode!=null">
+                        and paper_id=#{paperId}
+                    </when>
+                    <when test="classCode==null">
+                        paper_id=#{paperId}
+                    </when>
+                </choose>
+            </if>
+        </if>
+        ;
+    </select>
+
+    <select id="getMessageList" resultType="Message">
+        SELECT * FROM message
+        <if test="paperId!=null">
+            where paper_id=#{paperId}
+        </if>
+        order by create_date desc;
+    </select>
+
+    <insert id="save">
+      insert into message values
+      (#{id},#{createDate},#{userId},#{username},#{whisperId},#{paperId},#{classCode},#{pic},#{content},#{num});
+    </insert>
+
+    <select id="getMsgList" resultType="Message">
+        SELECT * FROM message
+        <if test="userId!=null||classCode!=null">
+            where
+            <if test="userId!=null">
+                user_id = #{userId}
+            </if>
+            <if test="classCode!=null">
+                <choose>
+                    <when test="userId!=null">
+                        and class_code=#{classCode}
+                    </when>
+                    <when test="userId==null">
+                        class_code=#{classCode}
+                    </when>
+                </choose>
+            </if>
+        </if>
+        order by create_date desc
+        <if test="x!=null">
+            limit #{x},#{y}
+        </if>
+        ;
+    </select>
+
+    <select id="getMessageListByWhisperId" resultType="Message">
+        SELECT * FROM message
+        <if test="whisperId!=null">
+            where whisper_id=#{whisperId}
+        </if>
+        order by create_date desc
+        limit 20;
+    </select>
+
+    <update id="update">
+        update message
+        <set>
+            <if test="createDate!=null">
+                create_date=#{createDate},
+            </if>
+            <if test="userId!=null">
+                user_id=#{userId},
+            </if>
+            <if test="username!=null">
+                username=#{username},
+            </if>
+            <if test="whisperId!=null">
+                whisper_id=#{whisperId},
+            </if>
+            <if test="paperId!=null">
+                paper_id=#{paperId},
+            </if>
+            <if test="classCode!=null">
+                class_code=#{classCode},
+            </if>
+            <if test="pic!=null">
+                pic=#{pic},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="num!=null">
+                num=#{num},
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+
+    <delete id="delete">
+        delete from message where id in (
+        <foreach item="item" separator="," collection="array">
+            #{item}
+        </foreach>
+        );
+    </delete>
+
+    <select id="getById" resultType="Message">
+      SELECT * FROM message where id = #{id};
+    </select>
+
+    <select id="getDataCountByWhisperId" resultType="Integer">
+        SELECT count(1) FROM message
+        <if test="whisperId!=null">
+            where whisper_id = #{whisperId}
+        </if>
+        ;
+    </select>
+
+</mapper>

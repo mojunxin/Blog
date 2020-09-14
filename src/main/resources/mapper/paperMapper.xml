@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.blog.dao.PaperDao">
+
+    <select id="dataCount" resultType="Integer">
+        SELECT count(1) FROM paper
+        <if test="userId!=null||classCode!=null">
+            where
+            <if test="userId!=null">
+                user_id = #{userId}
+            </if>
+            <if test="classCode!=null">
+                <choose>
+                    <when test="userId!=null">
+                        and class_code=#{classCode}
+                    </when>
+                    <when test="userId==null">
+                        class_code=#{classCode}
+                    </when>
+                </choose>
+            </if>
+        </if>
+        ;
+    </select>
+
+    <select id="getPaperList" resultType="Paper">
+        SELECT * FROM paper
+        <if test="userId!=null||classCode!=null">
+            where
+            <if test="userId!=null">
+                user_id = #{userId}
+            </if>
+            <if test="classCode!=null">
+                <choose>
+                    <when test="userId!=null">
+                        and class_code=#{classCode}
+                    </when>
+                    <when test="userId==null">
+                        class_code=#{classCode}
+                    </when>
+                </choose>
+            </if>
+        </if>
+        order by create_date desc
+        <if test="x!=null">
+            limit #{x},#{y}
+        </if>
+        ;
+    </select>
+
+    <select id="getById" resultType="Paper">
+      SELECT * FROM paper where id = #{id};
+    </select>
+
+    <select id="getBestNewPaper" resultType="String">
+      SELECT id FROM paper where create_date = (select max(create_date) from paper);
+    </select>
+
+    <update id="update">
+        update paper
+        <set>
+            <if test="pic!=null">
+                pic=#{pic},
+            </if>
+            <if test="title!=null">
+                title = #{title},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="createBy!=null">
+                create_by=#{createBy},
+            </if>
+            <if test="createDate!=null">
+                create_date=#{createDate},
+            </if>
+            <if test="isShow!=null">
+                is_show=#{isShow},
+            </if>
+            <if test="classCode!=null">
+                class_code=#{classCode},
+            </if>
+            <if test="userId!=null">
+                user_id=#{userId},
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+
+    <insert id="save">
+      insert into paper values
+      (#{id},#{title},#{createBy},#{createDate},#{pic},#{content},#{userId},#{classCode},#{isShow});
+    </insert>
+
+    <delete id="delete">
+        delete from paper where id in (
+        <foreach item="item" separator="," collection="array">
+            #{item}
+        </foreach>
+        );
+    </delete>
+
+</mapper>

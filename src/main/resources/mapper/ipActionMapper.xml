@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.blog.dao.IpActionDao">
+
+    <select id="count" resultType="Integer">
+        SELECT count(1) FROM ip_action;
+    </select>
+    <select id="list" resultType="IpAction">
+        SELECT * FROM ip_action
+        <if test="ip!=null">
+            where ip = #{ip}
+        </if>
+        order by create_date desc
+        limit 1000;
+    </select>
+    <select id="ipActionCount" resultType="java.util.Map">
+        SELECT ip,create_date,count(1) count FROM `ip_action`
+        <if test="ip!=null">
+            where ip = #{ip}
+        </if>
+        GROUP BY ip,create_date
+        ORDER BY create_date desc
+        limit 1000;
+    </select>
+
+    <insert id="save">
+      insert into ip_action values
+      (#{id},#{ip},#{action},#{createDate},#{code},#{place});
+    </insert>
+
+</mapper>
